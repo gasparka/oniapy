@@ -40,6 +40,7 @@ try:
         if msg:
             message, deltatime = msg
             timer += deltatime
+            print(deltatime)
             print("[%s] @%0.6f %r" % (port_name, timer, message))
 
         time.sleep(0.01)
@@ -49,6 +50,10 @@ finally:
     print("Exit.")
     midiin.close_port()
     del midiin
+
+# note offset = 21
+# min = 21
+# max = 108
 
 # import mido
 #
