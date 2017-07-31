@@ -18,7 +18,7 @@ import numpy as np
 
 from bokeh.io import curdoc
 from bokeh.layouts import row, widgetbox
-from bokeh.models import ColumnDataSource, Button
+from bokeh.models import ColumnDataSource
 from bokeh.models.widgets import Slider, TextInput
 from bokeh.plotting import figure
 
@@ -79,7 +79,7 @@ for w in [offset, amplitude, phase, freq]:
 
 # create a callback that will add a number in a random location
 def callback():
-    plot.rect(x=1, y=plot.y_range.start-20, width=17, height=50, alpha=0.5, color="red", width_units="screen",
+    p.rect(x=1, y=p.y_range.start-20, width=17, height=50, alpha=0.5, color="red", width_units="screen",
                height_units="screen")
 
 # add a button widget and configure with the call back
@@ -93,5 +93,5 @@ inputs = widgetbox(text, offset, amplitude, phase, freq)
 
 
 curdoc().add_periodic_callback(Update(), 10)
-curdoc().add_root(row(inputs, plot, button, width=800))
+curdoc().add_root(row(inputs, plot, width=800))
 curdoc().title = "Sliders"

@@ -7,7 +7,7 @@ from bokeh.models import ColumnDataSource, Range1d, Button, BoxSelectTool
 from bokeh.plotting import figure
 from copy import deepcopy
 
-p = figure(plot_width=1024, plot_height=512)
+p = figure(x_range=[0, 10], y_range=[0, 100])
 
 source = ColumnDataSource(data=dict(x=[1], y=[0]))
 r = p.rect(x='x', y='y', width=17, height=50, alpha=0.5, color="red", source=source, width_units="screen", height_units="screen")
@@ -31,19 +31,38 @@ class Update:
         # r.data_source.data["y"] = self.c
         self.c -= .1
 
-# create a callback that will add a number in a random location
-def callback():
-    p.rect(x=1, y=p.y_range.start-20, width=17, height=50, alpha=0.5, color="red", width_units="screen",
-               height_units="screen")
+last_source = None
+last = None
+def push():
+    global last, last_source
+    h = 500
+    print(p.y_range.start)
+    last_source = ColumnDataSource(data=dict(x=[1], y=[p.y_range.start-h/2], height=[h]))
+    last = p.rect(x='x', y='y', width=17, height='height', alpha=0.5, color="red", width_units="screen", source=last_source)
+
+def release():
+    # TODO need to get out of centroid based shit
+    new = last_source.data
+    print(new['y'][0] - 500/2 - p.y_range.start)
+    h = 500
+    over = new['y'][0] - h/2 - p.y_range.start
+    new['height'] = [h + over]
+
+    last_source.data = new
+    # last.data_source.data['width'] = 1
+    # last.width = 0
 
 # add a button widget and configure with the call back
-button = Button(label="The KEY")
-button.on_click(callback)
+button = Button(label="ON")
+button.on_click(push)
+
+off = Button(label="OFF")
+off.on_click(release)
 
 
 
 curdoc().add_periodic_callback(Update(), 10)
-lay_out=layout([[p], [button]])
+lay_out=layout([[p], [button], [off]])
 curdoc().add_root(lay_out)
 
 if __name__ == '__main__':
